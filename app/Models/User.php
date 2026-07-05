@@ -16,9 +16,10 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'email', 'password', 'user_type'])]
+#[Fillable(['name', 'email', 'password', 'user_type', 'profile_picture'])]
 #[Hidden(['password', 'remember_token', 'email_confirmation_token'])]
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements JWTSubject
@@ -40,6 +41,20 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    protected function appends(): array 
+    {
+        return [
+            'full_path_profile_picture' => 'string',
+        ];
+    }
+
+    public function getFullPathProfilePictureAttribute(): ?string
+    {
+        return $this->profile_picture
+            ? Storage::url($this->profile_picture)
+            : null;
+    }
+
     protected static function booted(): void
     {
         static::creating(function (User $user): void {
@@ -47,11 +62,22 @@ class User extends Authenticatable implements JWTSubject
                 $user->email_confirmation_token = Str::random(64);
             }
         });
+        
+        static::forceDeleted(function (User $user) {
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+        });
     }
 
     public function admin(): HasOne
     {
         return $this->hasOne(Admin::class);
+    }
+
+    public function tenant(): HasOne
+    {
+        return $this->hasOne(Tenant::class);
     }
 
     public function notifications(): HasMany

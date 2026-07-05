@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middlewares\IdentifyTenant;
 use App\Http\Middlewares\JwtMiddleware;
 use App\Http\Middlewares\SetBroadcastGuard;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.api' => JwtMiddleware::class,
             'broadcast.guard' => SetBroadcastGuard::class,
+            'tenant' => IdentifyTenant::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

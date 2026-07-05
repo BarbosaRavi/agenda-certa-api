@@ -8,6 +8,7 @@ use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\ForgotPasswordRequest;
 use App\Http\Requests\User\ResetPasswordRequest;
 use App\Http\Requests\User\ConfirmMailRequest;
+use App\Http\Requests\User\UploadProfilePictureRequest;
 use App\Http\Requests\User\ResendMailConfirmationRequest;
 use App\Services\User\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -49,5 +50,12 @@ class UserController extends Controller
         $this->service->resendMailConfirmation($request->validated());
 
         return ApiResponse::success(null, 'Email de confirmação reenviado com sucesso!', 200);
+    }
+
+    public function uploadProfilePicture(UploadProfilePictureRequest  $request): JsonResponse
+    {
+        $this->service->uploadProfilePicture($request->validated());
+
+        return ApiResponse::success(null, 'Foto de perfil atualizada com sucesso!', 200);
     }
 }

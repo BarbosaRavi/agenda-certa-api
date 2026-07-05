@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Tenant;
 
-use App\Rules\Admin\ActiveAdmin;
+use App\Rules\Tenant\ActiveTenant;
 use Illuminate\Foundation\Http\FormRequest;
 use Override;
 
-class AdminUpdateRequest extends FormRequest
+class TenantDeleteRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,18 +16,14 @@ class AdminUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid', new ActiveAdmin()],
-            'name' => ['required', 'string', 'max:50', 'min:3'],
-            'email' => ['required', 'email', 'unique:users'],
+            'id' => ['required', 'uuid', new ActiveTenant()],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'id' => 'ID do Admin',
-            'name' => 'Nome',
-            'email' => 'Email',
+            'id' => 'ID do tenant',
         ];
     }
 

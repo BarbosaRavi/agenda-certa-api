@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.4",
         "ext-redis": "*",
+        "dedoc/scramble": "^0.13.30",
         "laravel/framework": "^13.8",
         "laravel/horizon": "*",
         "laravel/reverb": "^1.0",

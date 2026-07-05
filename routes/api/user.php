@@ -11,3 +11,7 @@ Route::post('/resend-mail-confirmation', [UserController::class, 'resendMailConf
 Route::middleware(['auth.api'])->group(function () {
     Route::put('/password', [UserController::class, 'updatePassword']);
 });
+
+Route::middleware(['auth.api', 'can:users.update'])->group(function () {
+    Route::post('/upload-profile-picture', [UserController::class, 'uploadProfilePicture']);
+});

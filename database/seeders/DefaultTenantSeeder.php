@@ -3,24 +3,24 @@
 namespace Database\Seeders;
 
 use App\Enums\UserTypeEnum;
-use App\Models\Admin;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class DefaultAdminSeeder extends Seeder
+class DefaultTenantSeeder extends Seeder
 {
     public function run(): void
     {
         $user = User::create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
-            'user_type' => UserTypeEnum::SYS_ADMIN,
+            'name' => 'tenant',
+            'email' => 'tenant@example.com',
+            'user_type' => UserTypeEnum::TENANT,
             'password' => Hash::make(env('MASTER_PASSWORD')),
             'email_verified_at' => now(),
         ]);
 
-        Admin::create(['user_id' => $user->id]);
-        $user->assignRole(UserTypeEnum::SYS_ADMIN->value)->save();
+        Tenant::create(['user_id' => $user->id]);
+        $user->assignRole(UserTypeEnum::TENANT->value)->save();
     }
 }

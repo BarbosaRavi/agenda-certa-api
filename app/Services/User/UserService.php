@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ForgotPassword;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UserService
@@ -107,5 +108,18 @@ class UserService
             'password' => Hash::make($data['password']),
             'remember_token' => Str::random(60),
         ])->save();
+    }
+
+    public function uploadProfilePicture(array $data): void
+    {
+        $user = Auth::user();
+        if(isset($data['profile_picture'])) {
+            if ($user->profile_picture !== null) {
+                Storage::delete($user->profile_picture);
+            }
+
+            $path = $data['profile_picture']->store('agenda-certa/avatars');
+            $user->update(['profile_picture' => $path]);
+        }
     }
 }

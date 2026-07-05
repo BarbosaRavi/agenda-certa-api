@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Tenant;
 
+use App\Rules\Tenant\ActiveTenant;
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
-class AdminStoreRequest extends FormRequest
+class TenantUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,20 +16,24 @@ class AdminStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => ['required', 'uuid', new ActiveTenant()],
             'name' => ['required', 'string', 'max:50', 'min:3'],
             'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'max:50', 'confirmed'],
-            'profile_picture' => ['sometimes', 'nullable', 'image', 'file', 'size:2048'],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name' => 'Nome',
-            'email' => 'Email',
-            'password' => 'Senha',
-            'profile_picture' => 'Foto de perfil',
+            'id' => 'ID do tenant',
         ];
+    }
+
+    #[Override]
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'id' => $this->route('id'),
+        ]);
     }
 }
