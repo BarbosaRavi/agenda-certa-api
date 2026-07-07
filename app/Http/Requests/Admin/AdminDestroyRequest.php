@@ -22,7 +22,7 @@ class AdminDestroyRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'id' => 'ID do Admin',
+            'id' => 'ID do Administrador',
         ];
     }
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Client;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Override;
 
-class AdminRestoreRequest extends FormRequest
+class ClientRestoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,14 +15,14 @@ class AdminRestoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid', 'exists:admins,id'],
+            'id' => ['required', 'uuid', 'exists:clients,id'],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'id' => 'ID do Administrador',
+            'id' => 'ID do Cliente',
         ];
     }
 

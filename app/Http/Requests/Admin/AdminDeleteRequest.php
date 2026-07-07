@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Rules\Admin\ActiveAdmin;
+use App\Models\Admin;
+use App\Rules\IsActiveUserRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Override;
 
@@ -16,14 +17,14 @@ class AdminDeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid', new ActiveAdmin()],
+            'id' => ['required', 'uuid', new IsActiveUserRule(Admin::class)],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'id' => 'ID do Admin',
+            'id' => 'ID do Administrador',
         ];
     }
 

@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Admin;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\Admin\ActiveAdmin;
+use App\Rules\IsActiveUserRule;
 use Override;
 
 class AdminShowRequest extends FormRequest
@@ -16,14 +17,14 @@ class AdminShowRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid', new ActiveAdmin()],
+            'id' => ['required', 'uuid', new IsActiveUserRule(Admin::class)],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'id' => 'ID do Admin',
+            'id' => 'ID do Administrador',
         ];
     }
 

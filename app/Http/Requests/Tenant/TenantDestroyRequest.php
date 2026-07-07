@@ -15,14 +15,14 @@ class TenantDestroyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'uuid', 'exists:tenant,id'],
+            'id' => ['required', 'uuid', 'exists:tenants,id'],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'id' => 'ID do tenant',
+            'id' => 'ID do Inquilino',
         ];
     }
 

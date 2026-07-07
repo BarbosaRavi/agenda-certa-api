@@ -20,6 +20,13 @@ return [
         'tenant.destroy' => 'Destroi inquilino',
         'tenant.restore' => 'Restaura inquilino',
 
+        'client.view' => 'Visualizar cliente',
+        'client.create' => 'Criar cliente',
+        'client.update' => 'Atualizar cliente',
+        'client.delete' => 'Deletar cliente',
+        'client.destroy' => 'Destroi cliente',
+        'client.restore' => 'Restaura cliente',
+
         'permissions.view' => 'Visualizar permissoes',
 
 
@@ -33,5 +40,6 @@ return [
         'permissions' => 'Permissoes',
         'roles' => 'Cargos',
         'tenant' => 'Inquilinos',
+        'client' => 'Cliente',
     ],
 ];

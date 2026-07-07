@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services\Client;
 
 use App\Enums\UserTypeEnum;
-use App\Http\Resources\Admin\AdminResource;
-use App\Models\Admin;
-use App\Http\Resources\Admin\AdminCollection;
+use App\Exceptions\ApiException;
+use App\Http\Resources\Client\ClientCollection;
+use App\Http\Resources\Client\ClientResource;
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class AdminService
+class ClientService
 {
-    public function index(array $data): AdminCollection
+    public function index(array $data): ClientCollection
     {
         $page = $data['page'] ?? 1;
         $perPage = $data['per_page'] ?? 10;
         $search = $data['search'] ?? null;
         $trashed = $data['trashed'] ?? false; 
 
-        $query = Admin::query()
+        $query = Client::query()
             ->when($trashed,
                 fn ($query) => $query
                     ->whereHas('user', fn ($query) => $query->withTrashed())
@@ -43,63 +44,63 @@ class AdminService
             ->orderBy('created_at')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        return new AdminCollection($query);
+        return new ClientCollection($query);
     }
 
-    public function show(array $data): AdminResource
+    public function show(array $data): ClientResource
     {
-        $admin = Admin::findOrFail($data['id']);
-        return new AdminResource($admin->load('user'));
+        $client = Client::findOrFail($data['id']);
+        return new ClientResource($client->load('user'));
     }
 
-    public function store(array $data): AdminResource
+    public function store(array $data): ClientResource
     {
-        return DB::transaction(function () use ($data): AdminResource {
+        return DB::transaction(function () use ($data): ClientResource {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
-                'user_type' => UserTypeEnum::SYS_ADMIN,
+                'user_type' => UserTypeEnum::CLIENT,
                 'password' => Hash::make($data['password']),
             ]);
 
-            $admin = Admin::create(['user_id' => $user->id]);
-            $user->assignRole(UserTypeEnum::SYS_ADMIN->value)->save();
+            $client = Client::create(['user_id' => $user->id]);
+            $user->assignRole(UserTypeEnum::CLIENT->value)->save();
 
-            return new AdminResource($admin->load('user'));
+            return new ClientResource($client->load('user'));
         });
     }
-
-    public function update(array $data): AdminResource
+    
+    public function update(array $data): ClientResource
     {
-        $admin = Admin::findOrFail($data['id']);
+        $client = Client::findOrFail($data['id']);
 
-        return DB::transaction(function () use ($data, $admin): AdminResource {
+        return DB::transaction(function () use ($data, $client): ClientResource {
             $updateData = [ 
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
             ];    
         
-            $admin->user->update($updateData);
+            $client->user->update($updateData);
 
-            return new AdminResource($admin->load('user'));
+            return new ClientResource($client->load('user'));
         });
     }
 
     public function delete(array $data): void 
     {
         DB::transaction(function () use ($data): void {
-            Admin::findOrFail($data['id'])->user->delete();
+            Client::findOrFail($data['id'])->user->delete();
         });
     }
 
-    public function restore(array $data): AdminResource
+    public function restore(array $data): ClientResource
     {
-        return DB::transaction(function () use ($data): AdminResource {
-            $admin = Admin::findOrFail($data['id']);
-            $admin->user()->withTrashed()->firstOrFail()->restore();
-            return new AdminResource($admin->load('user'));
+        return DB::transaction(function () use ($data): ClientResource {
+            $client = Client::findOrFail($data['id']);
+            $client->user()->withTrashed()->firstOrFail()->restore();
+            return new ClientResource($client->load('user'));
         });
     }
 
@@ -107,8 +108,8 @@ class AdminService
     public function destroy(array $data): void 
     {
         DB::transaction(function () use ($data): void {
-            $admin = Admin::findOrFail($data['id']);
-            $admin->user()->withTrashed()->firstOrFail()->forceDelete();
+            $client = Client::findOrFail($data['id']);
+            $client->user()->withTrashed()->firstOrFail()->forceDelete();
         });
     }
 }

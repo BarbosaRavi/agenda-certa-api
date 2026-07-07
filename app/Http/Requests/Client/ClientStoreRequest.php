@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Tenant;
+namespace App\Http\Requests\Client;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TenantStoreRequest extends FormRequest
+class ClientStoreRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Builder\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\TenantStoreRequest;
+use App\Http\Requests\Tenant\TenantStoreRequest;
 use App\Http\Requests\Tenant\TenantDeleteRequest;
 use App\Http\Requests\Tenant\TenantDestroyRequest;
 use App\Http\Requests\Tenant\TenantIndexRequest;

@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'email', 'password', 'user_type', 'profile_picture'])]
+#[Fillable(['name', 'email', 'password', 'user_type', 'profile_picture', 'phone'])]
 #[Hidden(['password', 'remember_token', 'email_confirmation_token'])]
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements JWTSubject
@@ -78,6 +78,11 @@ class User extends Authenticatable implements JWTSubject
     public function tenant(): HasOne
     {
         return $this->hasOne(Tenant::class);
+    }
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class);
     }
 
     public function notifications(): HasMany

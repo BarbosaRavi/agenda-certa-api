@@ -4,8 +4,6 @@ namespace App\Services\Tenant;
 
 use App\Enums\UserTypeEnum;
 use App\Exceptions\ApiException;
-use App\Http\Resources\Admin\AdminResource;
-use App\Models\Admin;
 use App\Http\Resources\Tenant\TenantCollection;
 use App\Http\Resources\Tenant\TenantResource;
 use App\Models\Tenant;
@@ -20,7 +18,7 @@ class TenantService
         $page = $data['page'] ?? 1;
         $perPage = $data['per_page'] ?? 10;
         $search = $data['search'] ?? null;
-        $trashed = $data['trashed'] ?? null; 
+        $trashed = $data['trashed'] ?? false; 
 
         $query = Tenant::query()
             ->when($trashed,
@@ -38,7 +36,8 @@ class TenantService
 
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'ILIKE', "%{$search}%")
-                        ->orWhere('email', 'ILIKE', "%{$search}%");
+                        ->orWhere('email', 'ILIKE', "%{$search}%")
+                        ->orWhere('phone', 'ILIKE', "%{$search}%");
                     });
                 });
             })
@@ -54,12 +53,13 @@ class TenantService
         return new TenantResource($tenant->load('user'));
     }
 
-    public function store(array $data): AdminResource
+    public function store(array $data): TenantResource
     {
         return DB::transaction(function () use ($data): TenantResource {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'phone' => $data['phone'],
                 'user_type' => UserTypeEnum::TENANT,
                 'password' => Hash::make($data['password']),
             ]);
@@ -79,22 +79,10 @@ class TenantService
             $updateData = [ 
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'phone' => $data['phone'],
             ];    
         
-            $tenant->user->fill($updateData);
-
-            if ($tenant->user->isDirty('email')) {
-                $exists = User::query()
-                    ->withTrashed()
-                    ->where('email', $data['email'])
-                    ->exists();
-
-                if ($exists) {
-                    throw new ApiException('Email já está em uso', 422);
-                }
-            }
-
-            $tenant->user->save();
+            $tenant->user->update($updateData);
 
             return new TenantResource($tenant->load('user'));
         });
