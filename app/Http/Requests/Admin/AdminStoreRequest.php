@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Rules\PhoneValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
 class AdminStoreRequest extends FormRequest
 {
@@ -16,9 +18,9 @@ class AdminStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:50', 'min:3'],
             'email' => ['required', 'email', 'unique:users'],
-            'phone' => ['required', 'string', 'unique:users'],
+            'phone' => ['required', 'unique:users,phone', new PhoneValidationRule()],
             'password' => ['required', 'string', 'min:8', 'max:50', 'confirmed'],
-            'profile_picture' => ['sometimes', 'nullable', 'image', 'file', 'size:2048'],
+            'profile_picture' => ['sometimes', 'nullable', 'image', 'file', 'max:2048'],
         ];
     }
 
@@ -31,5 +33,15 @@ class AdminStoreRequest extends FormRequest
             'password' => 'Senha',
             'profile_picture' => 'Foto de perfil',
         ];
+    }
+
+    #[Override]
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('phone')) {
+            $this->merge([
+                'phone' => preg_replace('/\D+/', '', (string) $this->input('phone')),
+            ]);
+        }
     }
 }

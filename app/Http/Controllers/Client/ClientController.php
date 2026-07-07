@@ -23,26 +23,26 @@ class ClientController extends Controller
 
     public function index(ClientIndexRequest $request): JsonResponse
     {
-        $admin = $this->service->index($request->validated());
-        return ApiResponse::success($admin, "Clientes listados com sucesso!", 200);
+        $client = $this->service->index($request->validated());
+        return ApiResponse::success($client, "Clientes listados com sucesso!", 200);
     }
 
     public function show(ClientShowRequest $request): JsonResponse
     {
-        $admin = $this->service->show($request->validated());
-        return ApiResponse::success($admin, "Cliente visualizado com sucesso!", 200);
+        $client = $this->service->show($request->validated());
+        return ApiResponse::success($client, "Cliente visualizado com sucesso!", 200);
     }
 
     public function store(ClientStoreRequest $request): JsonResponse
     {
-        $admin = $this->service->store($request->validated());
-        return ApiResponse::success($admin, "Cliente criado com sucesso!", 200);
+        $client = $this->service->store($request->validated());
+        return ApiResponse::success($client, "Cliente criado com sucesso!", 200);
     }
 
     public function update(ClientUpdateRequest $request): JsonResponse
     {
-        $admin = $this->service->update($request->validated());
-        return ApiResponse::success($admin, "Cliente atualizado com sucesso!", 200);
+        $client = $this->service->update($request->validated());
+        return ApiResponse::success($client, "Cliente atualizado com sucesso!", 200);
     }
 
     public function delete(ClientDeleteRequest $request): JsonResponse
@@ -53,8 +53,8 @@ class ClientController extends Controller
 
     public function restore(ClientRestoreRequest $request): JsonResponse
     {
-        $admin = $this->service->restore($request->validated());
-        return ApiResponse::success($admin, "Cliente restaurado com sucesso!", 200);
+        $client = $this->service->restore($request->validated());
+        return ApiResponse::success($client, "Cliente restaurado com sucesso!", 200);
     }
 
     public function destroy(ClientDestroyRequest $request): JsonResponse

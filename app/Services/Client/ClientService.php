@@ -3,13 +3,13 @@
 namespace App\Services\Client;
 
 use App\Enums\UserTypeEnum;
-use App\Exceptions\ApiException;
 use App\Http\Resources\Client\ClientCollection;
 use App\Http\Resources\Client\ClientResource;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ClientService
 {
@@ -18,19 +18,19 @@ class ClientService
         $page = $data['page'] ?? 1;
         $perPage = $data['per_page'] ?? 10;
         $search = $data['search'] ?? null;
-        $trashed = $data['trashed'] ?? false; 
+        $withTrashed = $data['with_trashed'] ?? false; 
 
         $query = Client::query()
-            ->when($trashed,
+            ->when($withTrashed,
                 fn ($query) => $query
                     ->whereHas('user', fn ($query) => $query->withTrashed())
                     ->with(['user' => fn ($query) => $query->withTrashed()]),
                 fn ($query) => $query
                     ->whereHas('user')
                     ->with('user'))
-            ->when($search, function ($query) use ($search, $trashed): void {
-                $query->whereHas('user', function ($query) use ($search, $trashed): void {
-                    if ($trashed) {
+            ->when($search, function ($query) use ($search, $withTrashed): void {
+                $query->whereHas('user', function ($query) use ($search, $withTrashed): void {
+                    if ($withTrashed) {
                         $query->withTrashed();
                     }
 
@@ -59,10 +59,19 @@ class ClientService
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'],
+                'phone' => preg_replace('/\D+/', '', $data['phone']),
                 'user_type' => UserTypeEnum::CLIENT,
                 'password' => Hash::make($data['password']),
             ]);
+
+            if(isset($data['profile_picture'])) {
+                if ($user->profile_picture !== null) {
+                    Storage::disk('public')->delete($user->profile_picture);
+                }
+
+                $path = $data['profile_picture']->store('agenda-certa/avatars', 'public');
+                $user->update(['profile_picture' => $path]);
+            }
 
             $client = Client::create(['user_id' => $user->id]);
             $user->assignRole(UserTypeEnum::CLIENT->value)->save();
@@ -79,7 +88,7 @@ class ClientService
             $updateData = [ 
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'],
+                'phone' => preg_replace('/\D+/', '', $data['phone']),
             ];    
         
             $client->user->update($updateData);

@@ -115,10 +115,10 @@ class UserService
         $user = Auth::user();
         if(isset($data['profile_picture'])) {
             if ($user->profile_picture !== null) {
-                Storage::delete($user->profile_picture);
+                Storage::disk('public')->delete($user->profile_picture);
             }
 
-            $path = $data['profile_picture']->store('agenda-certa/avatars');
+            $path = $data['profile_picture']->store('agenda-certa/avatars', 'public');
             $user->update(['profile_picture' => $path]);
         }
     }

@@ -16,7 +16,7 @@ class DefaultAdminSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@example.com',
             'user_type' => UserTypeEnum::SYS_ADMIN,
-            'password' => Hash::make(env('MASTER_PASSWORD')),
+            'password' => Hash::make(env('DEFAULT_PASSWORD')),
             'email_verified_at' => now(),
         ]);
 

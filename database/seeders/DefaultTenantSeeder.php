@@ -16,7 +16,7 @@ class DefaultTenantSeeder extends Seeder
             'name' => 'tenant',
             'email' => 'tenant@example.com',
             'user_type' => UserTypeEnum::TENANT,
-            'password' => Hash::make(env('MASTER_PASSWORD')),
+            'password' => Hash::make(env('DEFAULT_PASSWORD')),
             'email_verified_at' => now(),
         ]);
 

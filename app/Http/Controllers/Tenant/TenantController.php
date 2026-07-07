@@ -23,26 +23,26 @@ class TenantController extends Controller
 
     public function index(TenantIndexRequest $request): JsonResponse
     {
-        $admin = $this->service->index($request->validated());
-        return ApiResponse::success($admin, "Inquilinos listados com sucesso!", 200);
+        $tenant = $this->service->index($request->validated());
+        return ApiResponse::success($tenant, "Inquilinos listados com sucesso!", 200);
     }
 
     public function show(TenantShowRequest $request): JsonResponse
     {
-        $admin = $this->service->show($request->validated());
-        return ApiResponse::success($admin, "Inquilino visualizado com sucesso!", 200);
+        $tenant = $this->service->show($request->validated());
+        return ApiResponse::success($tenant, "Inquilino visualizado com sucesso!", 200);
     }
 
     public function store(TenantStoreRequest $request): JsonResponse
     {
-        $admin = $this->service->store($request->validated());
-        return ApiResponse::success($admin, "Inquilino criado com sucesso!", 200);
+        $tenant = $this->service->store($request->validated());
+        return ApiResponse::success($tenant, "Inquilino criado com sucesso!", 200);
     }
 
     public function update(TenantUpdateRequest $request): JsonResponse
     {
-        $admin = $this->service->update($request->validated());
-        return ApiResponse::success($admin, "Inquilino atualizado com sucesso!", 200);
+        $tenant = $this->service->update($request->validated());
+        return ApiResponse::success($tenant, "Inquilino atualizado com sucesso!", 200);
     }
 
     public function delete(TenantDeleteRequest $request): JsonResponse
@@ -53,8 +53,8 @@ class TenantController extends Controller
 
     public function restore(TenantRestoreRequest $request): JsonResponse
     {
-        $admin = $this->service->restore($request->validated());
-        return ApiResponse::success($admin, "Inquilino restaurado com sucesso!", 200);
+        $tenant = $this->service->restore($request->validated());
+        return ApiResponse::success($tenant, "Inquilino restaurado com sucesso!", 200);
     }
 
     public function destroy(TenantDestroyRequest $request): JsonResponse

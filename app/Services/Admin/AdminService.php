@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\AdminCollection;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminService
 {
@@ -17,19 +18,19 @@ class AdminService
         $page = $data['page'] ?? 1;
         $perPage = $data['per_page'] ?? 10;
         $search = $data['search'] ?? null;
-        $trashed = $data['trashed'] ?? false; 
+        $withTrashed = $data['with_trashed'] ?? false; 
 
         $query = Admin::query()
-            ->when($trashed,
+            ->when($withTrashed,
                 fn ($query) => $query
                     ->whereHas('user', fn ($query) => $query->withTrashed())
                     ->with(['user' => fn ($query) => $query->withTrashed()]),
                 fn ($query) => $query
                     ->whereHas('user')
                     ->with('user'))
-            ->when($search, function ($query) use ($search, $trashed): void {
-                $query->whereHas('user', function ($query) use ($search, $trashed): void {
-                    if ($trashed) {
+            ->when($search, function ($query) use ($search, $withTrashed): void {
+                $query->whereHas('user', function ($query) use ($search, $withTrashed): void {
+                    if ($withTrashed) {
                         $query->withTrashed();
                     }
 
@@ -58,10 +59,19 @@ class AdminService
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'],
+                'phone' => preg_replace('/\D+/', '', $data['phone']),
                 'user_type' => UserTypeEnum::SYS_ADMIN,
                 'password' => Hash::make($data['password']),
             ]);
+
+            if(isset($data['profile_picture'])) {
+                if ($user->profile_picture !== null) {
+                    Storage::disk('public')->delete($user->profile_picture);
+                }
+
+                $path = $data['profile_picture']->store('agenda-certa/avatars', 'public');
+                $user->update(['profile_picture' => $path]);
+            }
 
             $admin = Admin::create(['user_id' => $user->id]);
             $user->assignRole(UserTypeEnum::SYS_ADMIN->value)->save();
@@ -78,7 +88,7 @@ class AdminService
             $updateData = [ 
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => $data['phone'],
+                'phone' => preg_replace('/\D+/', '', $data['phone']),
             ];    
         
             $admin->user->update($updateData);

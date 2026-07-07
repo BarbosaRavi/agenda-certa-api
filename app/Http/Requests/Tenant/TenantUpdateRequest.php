@@ -24,7 +24,7 @@ class TenantUpdateRequest extends FormRequest
         return [
             'id' => ['required', 'uuid', new IsActiveUserRule(Tenant::class)],
             'name' => ['required', 'string', 'max:50', 'min:3'],
-            'email' => ['required', 'email', 'unique:users'],
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'phone' => ['required', Rule::unique('users', 'phone')->ignore($userId), new PhoneValidationRule()],
         ];
     }
@@ -45,5 +45,11 @@ class TenantUpdateRequest extends FormRequest
         $this->merge([
             'id' => $this->route('id'),
         ]);
+
+        if ($this->has('phone')) {
+            $this->merge([
+                'phone' => preg_replace('/\D+/', '', (string) $this->input('phone')),
+            ]);
+        }
     }
 }

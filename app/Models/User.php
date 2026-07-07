@@ -51,7 +51,7 @@ class User extends Authenticatable implements JWTSubject
     public function getFullPathProfilePictureAttribute(): ?string
     {
         return $this->profile_picture
-            ? Storage::url($this->profile_picture)
+            ? Storage::disk('public')->url($this->profile_picture)
             : null;
     }
 
