@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\RoleAssignPermissionRequest;
 use App\Http\Requests\Role\RoleIndexRequest;
 use App\Services\Role\RoleService;
+use Dedoc\Scramble\Attributes\Endpoint;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 
@@ -16,12 +17,14 @@ class RoleController extends Controller
 
     public function __construct(protected RoleService $service){}
 
+    #[Endpoint(operationId: 'role.index', description: 'Lista cargos. Permission: roles.view.')]
     public function index(RoleIndexRequest $request): JsonResponse
     {
         $roles = $this->service->index($request->validated());
         return ApiResponse::success($roles, "Cargos listados com sucesso!", 200);
     }
 
+    #[Endpoint(operationId: 'role.assignPermission', description: 'Atribui uma permissao a um cargo. Permission: roles.assign-permission.')]
     public function assignPermission(RoleAssignPermissionRequest $request): JsonResponse
     {
         $role = $this->service->assignPermission($request->validated());

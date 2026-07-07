@@ -65,7 +65,7 @@ return [
          */
         'elements' => [
             'view' => 'scramble::docs',
-            'theme' => 'light',
+            'theme' => 'dark',
             'hideTryIt' => false,
             'hideSchemas' => false,
             'logo' => '',
@@ -102,7 +102,10 @@ return [
      * ],
      * ```
      */
-    'servers' => null,
+    'servers' => [
+        'Production' => 'https://agenda-certa-api.ravibarbosa.com.br/api',
+        'Local' => 'http://127.0.0.1:8000/api',
+    ],
 
     /**
      * Determines how Scramble stores the descriptions of enum cases.
@@ -169,6 +172,11 @@ return [
      *     ],
      * ],
      */
-    // 'security_strategy' => \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
-    'security_strategy' => null,
+    'security_strategy' => [
+        \Dedoc\Scramble\SecurityDocumentation\MiddlewareAuthSecurityStrategy::class,
+        [
+            'middleware' => ['auth.api'],
+            'scheme' => \Dedoc\Scramble\Support\Generator\SecurityScheme::http('bearer'),
+        ],
+    ],
 ];
