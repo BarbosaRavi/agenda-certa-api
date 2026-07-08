@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Builder\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\Auth\AuthService;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -21,6 +22,13 @@ class AuthController extends Controller
     {
         $admin = $this->service->login($request->validated());
         return ApiResponse::success($admin, "Usuário com sucesso!", 200);
+    }
+
+    #[Endpoint(operationId: 'auth.register', description: 'Registra um usuario como cliente ou inquilino.')]
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $user = $this->service->register($request->validated());
+        return ApiResponse::success($user, "Usuario registrado com sucesso!", 201);
     }
 
     #[Endpoint(operationId: 'auth.me', description: 'Retorna os dados do usuario autenticado.')]

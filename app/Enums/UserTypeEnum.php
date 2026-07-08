@@ -13,7 +13,7 @@ enum UserTypeEnum: string
     {
         return match ($this) {
             static::USER => 'Usuário',
-            static::TENANT => 'Inquilino',
+            static::TENANT => 'Prestador de Serviço',
             static::CLIENT => 'Cliente',
             static::SYS_ADMIN => 'Administrador do Sistema',
         };
