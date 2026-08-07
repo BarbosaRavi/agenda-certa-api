@@ -103,8 +103,9 @@ return [
      * ```
      */
     'servers' => [
+        'Local' => 'http://agenda-certa-api.test/api',
         'Production' => 'https://agenda-certa-api.ravibarbosa.com.br/api',
-        'Local' => 'http://127.0.0.1:8000/api',
+        
     ],
 
     /**
