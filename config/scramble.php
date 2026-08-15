@@ -81,10 +81,10 @@ return [
             'cdn' => 'https://cdn.jsdelivr.net/npm/@scalar/api-reference',
             'theme' => 'laravel',
             'proxyUrl' => 'https://proxy.scalar.com',
-            'darkMode' => false,
+            'darkMode' => true,
             'showDeveloperTools' => 'never',
             'agent' => ['disabled' => true],
-            'credentials' => 'include',
+            'credentials' => 'omit',
         ],
     ],
 
@@ -103,7 +103,7 @@ return [
      * ```
      */
     'servers' => [
-        'Local' => 'http://agenda-certa-api.test/api',
+        'Local' => 'http://127.0.0.1/api',
         'Production' => 'https://agenda-certa-api.ravibarbosa.com.br/api',
         
     ],
